@@ -15,7 +15,7 @@
 <body>
   <a class="skip" href="#intro">К содержимому</a>
   <header class="site-header">
-    <a class="brand" href="#intro"><span class="brand-mark" aria-hidden="true"></span>Nano Lightbox <span class="version">0.1.0</span></a>
+    <a class="brand" href="#intro"><span class="brand-mark" aria-hidden="true"></span>Nano Lightbox <span class="version">0.1.1</span></a>
     <div class="header-links"><span>Документация</span><a href="https://github.com/VladimirIvanin/nano-lightbox">GitHub ↗</a></div>
   </header>
   <div class="layout">
@@ -145,7 +145,7 @@ const gallery = await openGallery(link);
 gallery?.addEventListener('nl:change', event =&gt; {
   console.log(event.detail.index); // Индекс слайда с нуля
 });</code></pre></div>
-        <div class="table-wrap"><table><thead><tr><th>Метод</th><th>Поведение</th></tr></thead><tbody><tr><td><code>open(dialog, opener?)</code></td><td>Открывает готовый dialog. Повторный вызов для открытого окна пропускается.</td></tr><tr><td><code>close(dialog, value?)</code></td><td>Закрывает окно через нативный close(). Освобождает прокрутку после события close.</td></tr><tr><td><code>openGallery(link)</code></td><td>Возвращает Promise с диалогом. Во время загрузки или показа другой галереи возвращает undefined.</td></tr><tr><td><code>resolveMedia(src, options?)</code></td><td>Экспорт providers. Возвращает type и src. Опции — type, embed, base.</td></tr><tr><td><code>createThumbs(dialog, links, go)</code></td><td>Экспорт thumbs. Добавляет ленту, возвращает функцию update(index).</td></tr></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>Метод</th><th>Поведение</th></tr></thead><tbody><tr><td><code>open(dialog, opener?)</code></td><td>Открывает готовый dialog. Повторный вызов для открытого окна пропускается.</td></tr><tr><td><code>close(dialog, value?)</code></td><td>Закрывает окно через нативный close(). Освобождает прокрутку после события close.</td></tr><tr><td><code>openGallery(link, options?)</code></td><td>Возвращает Promise с диалогом. Во время загрузки или показа другой галереи возвращает undefined.</td></tr><tr><td><code>resolveMedia(src, options?)</code></td><td>Экспорт providers. Возвращает type и src. Опции — type, embed, base.</td></tr><tr><td><code>createThumbs(dialog, links, go)</code></td><td>Экспорт thumbs. Добавляет ленту, возвращает функцию update(index).</td></tr></tbody></table></div>
       </section>
 
       <section id="styling">
@@ -160,6 +160,13 @@ gallery?.addEventListener('nl:change', event =&gt; {
 }
 
 #menu { --nl-drawer-width: 24rem; }</code></pre></div>
+        <h3>Галерея: тема, цвета и разметка</h3>
+        <p>По умолчанию галерея занимает весь экран. Для светлой темы добавьте <code>data-nl-theme="light"</code> на ссылку или контейнер. <code>data-nl-class</code> добавляет класс самому окну, а <code>data-nl-template</code> подключает ваш HTML-шаблон.</p>
+        <div class="code-block"><div class="code-title">HTML <button data-copy>Копировать</button></div><pre><code>&lt;div data-nl-theme="light" data-nl-class="product-gallery"&gt;
+  &lt;a href="/photo.jpg" data-nl-gallery="product"&gt;Посмотреть фото&lt;/a&gt;
+&lt;/div&gt;</code></pre></div>
+        <p>В JavaScript доступны <code>theme</code>, <code>className</code> и <code>template</code>: как в <code>openGallery(link, options)</code>, так и в <code>scope.gallery(container, options)</code>. Цвета задаются CSS-переменными на диалоге; шаблон позволяет перемещать подписи, кнопки и миниатюры.</p>
+        <p><a href="examples/gallery.html">Попробовать темы и окно с боковой подписью →</a> · <a href="README.md#оформление-и-шаблоны-галереи">Переменные и контракт шаблона →</a></p>
         <p><code>data-nl-modal</code> включает базовое оформление окна. Для панели используйте <code>data-nl-drawer</code>. Анимация строится на <code>@starting-style</code>, <code>allow-discrete</code> и <code>overlay</code>. При <code>prefers-reduced-motion</code> движение отключается.</p>
       </section>
 
@@ -173,7 +180,7 @@ gallery?.addEventListener('nl:change', event =&gt; {
         <p class="caption">Minified + gzip, уровень 9. Сумма отдельных файлов с общими модулями, каждый учитывается один раз. Размеры берутся из текущей сборки. Стили и скрипты этой документации в размер библиотеки не входят.</p>
         <p><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog">Справочник dialog на MDN ↗</a> · <a href="README.md">README проекта ↗</a></p>
       </section>
-      <footer class="page-footer"><span>Nano Lightbox · 0.1.0</span><a href="#intro">Наверх ↑</a></footer>
+      <footer class="page-footer"><span>Nano Lightbox · 0.1.1</span><a href="#intro">Наверх ↑</a></footer>
     </main>
   </div>
 

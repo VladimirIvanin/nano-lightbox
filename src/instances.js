@@ -1,5 +1,6 @@
 import { open as openDialog, close as closeDialog, release } from './core.js';
 import { resolveMedia } from './providers.js';
+import { createGalleryShell, galleryAppearance } from './gallery-shell.js';
 
 // Shared by ESM and classic-script builds, including repeated script loads.
 const registry = globalThis[Symbol.for('nano-lightbox.instances')] ||= { scopes: new Map() };
@@ -118,7 +119,7 @@ function createController(scope, container, initial, isGallery, unregister, owns
       state = 'opening';
       pending = Promise.resolve().then(() => {
         if (state !== 'opening' || token !== generation) return false;
-        applied = { ...options, labels: { ...defaults, ...options.labels } };
+        applied = { ...(isGallery ? galleryAppearance(input instanceof Element ? input : container, options) : options), labels: { ...defaults, ...options.labels } };
         trigger = input instanceof Element ? input : document.activeElement;
         if (isGallery) {
           items = readItems(input);
@@ -240,18 +241,11 @@ function renderGallery(dialog, items, options, select, error, close) {
     const node = document.createElement('button'); node.type = 'button'; node.textContent = text; node.setAttribute('aria-label', label);
     node.addEventListener('click', action, { signal: abort.signal }); return node;
   };
-  const dismiss = button(labels.close, '×', close);
-  dismiss.className = 'nl-dismiss'; dismiss.autofocus = true;
-  const track = document.createElement('div'); track.className = 'nl-track';
-  const slides = items.map(() => { const node = document.createElement('div'); node.className = 'nl-slide'; node.inert = true; track.append(node); return node; });
-  const footer = document.createElement('div'); footer.className = 'nl-footer';
-  const caption = document.createElement('span'), count = document.createElement('span');
-  count.setAttribute('aria-live', 'polite'); count.setAttribute('aria-atomic', 'true');
   let current = -1, timer;
-  const previous = button(labels.previous, '←', () => select(current - 1));
-  const next = button(labels.next, '→', () => select(current + 1));
-  previous.hidden = next.hidden = items.length === 1;
-  footer.append(previous, caption, count, next); dialog.append(dismiss, track, footer);
+  const { track, caption, updateControls } = createGalleryShell(dialog, options, labels, {
+    dismiss: close, previous: () => select(current - 1), next: () => select(current + 1)
+  }, items.length);
+  const slides = items.map(() => { const node = document.createElement('div'); node.className = 'nl-slide'; node.inert = true; track.append(node); return node; });
   const thumbs = [];
   if (options.thumbs) {
     const strip = document.createElement('div'); strip.className = 'nl-thumbs';
@@ -260,7 +254,7 @@ function renderGallery(dialog, items, options, select, error, close) {
       if (item.thumb) { const img = document.createElement('img'); img.src = item.thumb; img.alt = ''; img.loading = 'lazy'; node.replaceChildren(img); }
       strip.append(node); thumbs.push(node);
     });
-    dialog.append(strip);
+    (dialog.querySelector('.nl-thumbs-slot') || dialog).append(strip);
   }
   function clear(node) {
     const video = node.querySelector('video');
@@ -281,11 +275,13 @@ function renderGallery(dialog, items, options, select, error, close) {
         else { node.title = item.caption || labels.gallery; node.allowFullscreen = true; node.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media'; }
         node.src = media.src; slide.append(node);
         const url = new URL(item.src, document.baseURI);
-        if (['http:', 'https:'].includes(url.protocol)) { const link = document.createElement('a'); link.href = url.href; link.textContent = labels.original; link.target = '_blank'; link.rel = 'noopener'; slide.append(link); }
+        if (['http:', 'https:'].includes(url.protocol)) { const link = document.createElement('a'); link.className = 'nl-original'; link.href = url.href; link.textContent = labels.original; link.target = '_blank'; link.rel = 'noopener'; slide.append(link); }
       } catch (cause) { slide.textContent = labels.unavailable; error(cause); }
-      caption.textContent = item.caption || ''; count.textContent = `${index + 1} / ${items.length}`;
-      previous.disabled = index === 0; next.disabled = index === items.length - 1;
+      caption.textContent = item.caption || '';
+      updateControls(index);
       thumbs.forEach((node, i) => node.setAttribute('aria-current', String(i === index)));
+      const thumb = thumbs[index];
+      if (thumb) thumb.parentElement.scrollTo({ left: thumb.offsetLeft - thumb.parentElement.offsetLeft - (thumb.parentElement.clientWidth - thumb.clientWidth) / 2, behavior: 'instant' });
       dialog.dispatchEvent(new CustomEvent('nl:change', { detail: { index } }));
     }
     track.scrollTo({ left: index * track.clientWidth, behavior: 'instant' });

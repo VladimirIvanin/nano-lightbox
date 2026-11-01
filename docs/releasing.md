@@ -12,11 +12,11 @@
 
 Отдельно можно выполнить `npm run build:browser`. Бюджеты с баннером: JS до 10 КБ gzip, CSS до 2 КБ gzip. `dist/nano-lightbox.js` сохранён для совместимости существующих подключений.
 
-После успешной публикации версии `0.1.0`:
+После успешной публикации версии `0.1.1`:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.0/browser-build/nano-lightbox.css">
-<script defer src="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.0/browser-build/nano-lightbox.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.1/browser-build/nano-lightbox.css">
+<script defer src="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.1/browser-build/nano-lightbox.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   // Здесь библиотека загружена; initializer виджетов получает NanoLightbox.

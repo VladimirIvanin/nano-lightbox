@@ -1,4 +1,5 @@
-.nl-thumbs { display: flex; flex-shrink: 0; gap: .5rem; overflow-x: auto; overscroll-behavior-x: contain; padding: .25rem; }
-.nl-thumbs button { flex: 0 0 56px; height: 48px; padding: 0; overflow: hidden; }
+.nl-thumbs { display: flex; position: relative; flex-shrink: 0; gap: 8px; max-width: 100%; box-sizing: border-box; width: max-content; margin-inline: auto; overflow-x: auto; overscroll-behavior-x: contain; padding: 4px; }
+.nl-thumbs button { flex: 0 0 56px; height: 44px; padding: 0; overflow: hidden; opacity: .5; }
 .nl-thumbs img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.nl-thumbs [aria-current="true"] { outline: 2px solid currentColor; outline-offset: 1px; }
+.nl-thumbs button:hover, .nl-thumbs [aria-current="true"] { opacity: 1; }
+.nl-thumbs [aria-current="true"] { outline: 1px solid currentColor; outline-offset: 2px; }

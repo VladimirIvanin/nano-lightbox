@@ -21,8 +21,8 @@ npm run dev
 Для InSales доступна самостоятельная поставка в `browser-build`: `nano-lightbox.min.js`, единый `nano-lightbox.css` и gzip-копия JS. Файлы входят в npm-пакет и прикрепляются к GitHub Release, как у Tvist. После публикации версии доступны через jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.0/browser-build/nano-lightbox.css">
-<script defer src="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.0/browser-build/nano-lightbox.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.1/browser-build/nano-lightbox.css">
+<script defer src="https://cdn.jsdelivr.net/npm/nano-lightbox@0.1.1/browser-build/nano-lightbox.min.js"></script>
 ```
 
 Используйте API `window.NanoLightbox` после загрузки script. При `defer` запускайте initializer в `DOMContentLoaded`; JS и CSS должны иметь одну версию. ESM устанавливается через `npm install nano-lightbox`. [Порядок выпуска версии и однократная настройка npm/GitHub Pages](docs/releasing.md).
@@ -136,7 +136,7 @@ const dialog = await openGallery(document.querySelector('a[data-nl-gallery]'));
 dialog?.addEventListener('nl:change', event => console.log(event.detail.index));
 ```
 
-`openGallery(trigger)` возвращает `Promise<HTMLDialogElement | undefined>`. Триггер должен быть ссылкой в документе. Одновременно открывается одна галерея. Повторный вызов во время загрузки или показа возвращает `undefined`. Закрытая галерея удаляется из DOM. Событие `nl:change` содержит индекс с нуля. `resolveMedia(source, {type?, embed?, base?})` возвращает `{type: 'image' | 'video' | 'iframe', src}` и выбрасывает исключение для запрещённых протоколов или неизвестного embed URL.
+`openGallery(trigger, options?)` возвращает `Promise<HTMLDialogElement | undefined>`. Триггер должен быть ссылкой в документе. Одновременно открывается одна галерея. Повторный вызов во время загрузки или показа возвращает `undefined`. Закрытая галерея удаляется из DOM. Событие `nl:change` содержит индекс с нуля. `resolveMedia(source, {type?, embed?, base?})` возвращает `{type: 'image' | 'video' | 'iframe', src}` и выбрасывает исключение для запрещённых протоколов или неизвестного embed URL.
 
 `nano-lightbox/thumbs` экспортирует `createThumbs(dialog, links, go)`. Эта функция добавляет ленту и возвращает `update(index)` для синхронизации текущей кнопки. Обычно её загружает сама галерея.
 
@@ -174,7 +174,7 @@ ESM предоставляет тот же API через `import { createScope,
 
 `modal.open(opener?)` принимает открывающий элемент. `gallery.open(indexOrLink?)` принимает индекс с нуля либо DOM-ссылку. В DOM-режиме имя `data-nl-gallery` объединяет ссылки только внутри контейнера контроллера; пустое имя при клике открывает одну ссылку. Программное `open(0)` без ссылки собирает все подходящие ссылки контейнера. Вложенные зарегистрированные контейнеры и области исключаются из родительской выборки. Локальная делегация поддерживает добавленные после регистрации ссылки, `data-nl-open="dialog-id"` и `data-nl-close`. Идентификаторы в HTML должны оставаться уникальными. `auto.js` пропускает зарегистрированные области.
 
-Настройки: `closedby: 'any' | 'closerequest' | 'none'` (по умолчанию `any`), `returnFocus: boolean` (по умолчанию `true`, управляет явным возвратом фокуса библиотекой; браузер также имеет собственное поведение), `labels`. Для галереи также `thumbs: boolean`, `selector` (по умолчанию `a[data-nl-gallery]`) и `items`. `setOptions` объединяет настройки и подписи; новые настройки применяются при следующем открытии. Кнопка закрытия работает при любом `closedby`.
+Настройки: `closedby: 'any' | 'closerequest' | 'none'` (по умолчанию `any`), `returnFocus: boolean` (по умолчанию `true`, управляет явным возвратом фокуса библиотекой; браузер также имеет собственное поведение), `labels`. Для галереи также `thumbs: boolean`, `selector` (по умолчанию `a[data-nl-gallery]`) и `items`, а также оформление `theme`, `className`, `template` (см. ниже). `setOptions` объединяет настройки и подписи; новые настройки применяются при следующем открытии. Кнопка закрытия работает при любом `closedby`.
 
 Ключи `labels`: `close`, `previous`, `next`, `original`, `gallery`, `unavailable`, `slide`. Подписи по умолчанию английские. Контент, настройки и подписки независимы. Открытие следующей галереи закрывает предыдущую; отмена `beforeclose` отменяет переключение. Галерея допускается поверх модалки; закрытие или уничтожение родителя освобождает и её.
 
@@ -204,6 +204,78 @@ gallery.setItems([{ src: '/other.jpg', caption: 'Новый вариант' }]);
 
 Удаление DOM само по себе не вызывает destroy. Владелец должен вызвать cleanup перед удалением или заменой виджета и initializer после вставки. MutationObserver, опроса DOM и придуманного события удаления InSales нет. Скрытие виджета не равно уничтожению.
 
+## Оформление и шаблоны галереи
+
+Базовый вид — полноэкранная графитовая галерея: счётчик сверху, стрелки по краям кадра, подпись и миниатюры снизу. Пустое пространство вокруг медиа закрывает окно при `closedby="any"`; свайп или перетаскивание из изображения не закрывают его. Формы и меню по-прежнему используют вашу разметку `<dialog>` и CSS.
+
+### Тема и CSS
+
+```html
+<div data-nl-theme="light" data-nl-class="product-gallery">
+  <a href="/photo.jpg" data-nl-gallery="product">Посмотреть фото</a>
+</div>
+```
+
+`data-nl-theme="dark"` (по умолчанию) или `light`, `data-nl-class` и `data-nl-template` читаются с открывающей ссылки либо ближайшего предка с соответствующим атрибутом. Каждый параметр наследуется независимо. Диалог создаётся в `body`, поэтому стили нужно адресовать его классу, а не вложенности в виджет.
+
+```css
+/* Подключите после стилей библиотеки. */
+dialog.nl-gallery.product-gallery {
+  --nl-surface: #f7f4ee;
+  --nl-color: #27231e;
+  --nl-muted: #655e55;
+  --nl-control: rgb(0 0 0 / .04);
+  --nl-control-hover: rgb(0 0 0 / .08);
+  --nl-control-radius: 8px;
+  --nl-gallery-padding: 24px;
+  --nl-media-gutter: 56px;
+}
+```
+
+`--nl-gallery-padding` задаёт отступ от края экрана (по умолчанию 16px с учётом safe area сверху и снизу), `--nl-media-gutter` — горизонтальный отступ медиа (64px, до 600px — 0). Кнопки имеют область нажатия 44 × 44px. `--nl-duration` управляет анимацией окна. Для модалок остаются `--nl-surface`, `--nl-color`, `--nl-radius`, `--nl-padding`, `--nl-backdrop`; для меню также `--nl-drawer-width`.
+
+Те же настройки доступны через оба API:
+
+```js
+await openGallery(link, { theme: 'light', className: 'product-gallery' });
+
+const gallery = scope.gallery(container, {
+  theme: 'light',
+  className: 'product-gallery',
+  template: '#product-template',
+  thumbs: true
+});
+gallery.setOptions({ theme: 'dark', template: null }); // со следующего открытия
+```
+
+JS-настройки имеют приоритет над HTML-атрибутами. `template: null` возвращает базовую разметку, `className: ''` убирает пользовательские классы при следующем открытии.
+
+### Собственная разметка
+
+Передайте селектор `<template>` или сам `HTMLTemplateElement`. Для HTML-подключения достаточно `data-nl-template="#product-template"`. Шаблон клонируется при каждом открытии и перестроении галереи; исходный шаблон не изменяется.
+
+```html
+<template id="product-template">
+  <div class="nl-toolbar">
+    <span class="nl-count"></span>
+    <button class="nl-dismiss"></button>
+  </div>
+  <div class="nl-stage">
+    <div class="nl-track"></div>
+    <button class="nl-previous"></button>
+    <button class="nl-next"></button>
+  </div>
+  <div class="nl-footer"><span class="nl-caption"></span></div>
+  <div class="nl-thumbs-slot"></div>
+</template>
+```
+
+Обязательны ровно по одному `.nl-track`, `.nl-caption`, `.nl-count`, `.nl-dismiss`, `.nl-previous`, `.nl-next`. Последние три должны быть `<button>`; пустые кнопки получают стандартные SVG, собственные иконки или текст сохраняются. Библиотека задаёт доступные подписи кнопок, начальный фокус, счётчик и состояния disabled/hidden. `.nl-track` должен быть пустым: медиа создаёт и очищает библиотека. Подпись выводится как текст.
+
+`.nl-thumbs-slot` — необязательное место для миниатюр, без него лента добавляется в конец диалога. `.nl-toolbar`, `.nl-stage` и `.nl-footer` — классы стандартной компоновки; для другой структуры задайте свой CSS через `className`. Авторские кнопки и ссылки можно добавлять рядом с обязательными частями. Избегайте фиксированных `id` внутри клонируемой разметки. Шаблон — доверенная разметка разработчика, а не строка с пользовательским HTML.
+
+Неправильный шаблон отклоняется: `openGallery` возвращает rejected Promise (HTML-инициализация переходит по исходной ссылке), контроллер сообщает `error` и возвращает `false`, освобождая окно. Примеры светлой темы и боковой подписи находятся в [examples/gallery.html](examples/gallery.html).
+
 ## Размер и проверки
 
 `npm run build` минифицирует ESM через esbuild, создаёт общие части и `dist/sizes.json`. Размеры суммируются по графу импортов, каждая загружаемая часть учитывается один раз. Для сценария модалки исключаются динамические импорты. Gzip с уровнем 9 рассчитывается отдельно для каждого HTTP-ресурса. Бюджет ядра включает общий модуль и точку входа `core.js`. Бюджет полной JS-поставки включает HTML-инициализацию, провайдеры и миниатюры, CSS учитывается отдельно.
@@ -214,6 +286,6 @@ npx playwright install chromium firefox webkit
 npm run check
 ```
 
-Сборка завершается ошибкой при превышении 1024 байт для ядра, 5120 байт для компактной полной JS-поставки или 2048 байт для всего CSS. Расширенный ESM-граф `instances` и самостоятельный script имеют отдельные лимиты по 10240 байт gzip. Они также отражаются в `dist/sizes.json`. CI устанавливает три браузера и выполняет те же проверки.
+Сборка завершается ошибкой при превышении 1024 байт для ядра, 6144 байт для компактной полной JS-поставки с темами и шаблонами или 2048 байт для всего CSS. Расширенный ESM-граф `instances` и самостоятельный script имеют отдельные лимиты по 10240 байт gzip. Они также отражаются в `dist/sizes.json`. CI устанавливает три браузера и выполняет те же проверки.
 
 Автотесты покрывают преобразование URL всех пяти сервисов и сохранение ключей, жизненный цикл медиа, фокус, прокрутку, закрытие диалога разными способами, переключение меню на desktop, синхронизацию слайдов и миниатюр. Сторонние плееры в браузерных тестах подменяются ответами, чтобы проверки не зависели от сети. Воспроизведение реальных роликов всех сервисов и прогоны на физических iPhone/Android остаются обязательной ручной проверкой перед выпуском.

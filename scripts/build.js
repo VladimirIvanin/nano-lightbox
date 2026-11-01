@@ -10,10 +10,17 @@ for (const name of await readdir('dist')) {
   if (/^(?:chunk-[\w-]+|core|auto|gallery|providers|thumbs|instances|nano-lightbox)\.(?:js|css)$|^sizes\.json$/.test(name)) await unlink(`dist/${name}`);
 }
 const result = await build({
-  entryPoints: ['core', 'auto', 'gallery', 'providers', 'thumbs', 'instances'].map(name => `src/${name}.js`),
+  entryPoints: ['core', 'auto', 'gallery', 'providers', 'thumbs'].map(name => `src/${name}.js`),
   outdir: 'dist', bundle: true, splitting: true, format: 'esm', minify: true,
   target: ['chrome100', 'firefox100', 'safari15.5'], metafile: true
 });
+// Keep the extended API self-contained. Sharing its UI chunk with auto.js
+// would add a request and duplicate gzip dictionaries in the compact graph.
+const instancesResult = await build({
+  entryPoints: ['src/instances.js'], outdir: 'dist', bundle: true, format: 'esm', minify: true,
+  target: ['chrome100', 'firefox100', 'safari15.5'], metafile: true
+});
+Object.assign(result.metafile.outputs, instancesResult.metafile.outputs);
 await build({ entryPoints: ['src/instances.js'], outfile: 'dist/nano-lightbox.js', bundle: true, format: 'iife', globalName: 'NanoLightbox', minify: true, target: ['chrome100', 'firefox100', 'safari15.5'] });
 for (const name of ['core', 'gallery', 'thumbs']) {
   await build({ entryPoints: [`src/${name}.css`], outfile: `dist/${name}.css`, minify: true });
@@ -47,4 +54,4 @@ const browser = await buildBrowser();
 const report = { gzipBytes: { core, modal, gallery, thumbnailsIncrement: full - gallery, full, instances, script, css, browserScript: browser.script, browserCss: browser.css }, files: sizes };
 console.log(JSON.stringify(report, null, 2));
 await writeFile('dist/sizes.json', JSON.stringify(report, null, 2));
-if (core > 1024 || full > 5120 || css > 2048 || instances > 10240 || script > 10240) throw new Error('Gzip budget exceeded');
+if (core > 1024 || full > 6144 || css > 2048 || instances > 10240 || script > 10240) throw new Error('Gzip budget exceeded');

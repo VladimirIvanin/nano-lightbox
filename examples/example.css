@@ -38,3 +38,18 @@
   .example-gallery img { height: 200px; }
   .example-gallery > a { padding: 16px; }
 }
+
+.appearance-examples { display: flex; flex-wrap: wrap; gap: 12px; }
+dialog.nl-gallery.editorial-gallery[open] { display: grid; grid-template-columns: minmax(0, 1fr) 256px; grid-template-rows: 44px minmax(0, 1fr); gap: 24px; --nl-gallery-padding: 24px; }
+.editorial-gallery .nl-toolbar { grid-column: 1 / -1; }
+.editorial-gallery .editorial-info { display: flex; flex-direction: column; justify-content: center; gap: 32px; min-height: 0; overflow: auto; }
+.editorial-gallery .nl-footer { text-align: start; max-height: none; }
+.editorial-gallery .nl-caption { margin: 8px 0 16px; font: 400 28px/1.2 Georgia, serif; }
+.editorial-gallery p { color: var(--nl-muted); margin: 0; }
+.editorial-gallery .editorial-series { font-size: 12px; }
+.editorial-gallery .nl-thumbs { margin-inline: 0; }
+@media (max-width: 720px) {
+  dialog.nl-gallery.editorial-gallery[open] { display: flex; gap: 16px; --nl-gallery-padding: 16px; }
+  .editorial-gallery .editorial-info { flex-shrink: 0; max-height: 30vh; gap: 16px; }
+  .editorial-gallery .nl-caption { font-size: 24px; margin: 4px 0 8px; }
+}

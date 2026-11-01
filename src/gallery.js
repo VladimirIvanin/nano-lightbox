@@ -1,11 +1,12 @@
 import { open, close } from './core.js';
 import { resolveMedia } from './providers.js';
+import { createGalleryShell, galleryAppearance } from './gallery-shell.js';
 
 let active;
 let opening = false;
 const galleries = globalThis[Symbol.for('nano-lightbox.gallery')] ||= { active: null };
 
-export async function openGallery(trigger) {
+export async function openGallery(trigger, options = {}) {
   if (opening || active?.open) return;
   opening = true;
   try {
@@ -17,19 +18,9 @@ export async function openGallery(trigger) {
     const dialog = document.createElement('dialog');
     dialog.className = 'nl-gallery';
     dialog.setAttribute('aria-label', trigger.dataset.nlLabel || 'Media gallery');
-    const button = (label, text, handler) => {
-      const element = document.createElement('button');
-      element.type = 'button';
-      element.setAttribute('aria-label', label);
-      element.textContent = text;
-      element.addEventListener('click', handler);
-      return element;
-    };
-    const dismiss = button('Close gallery', '×', () => close(dialog));
-    dismiss.className = 'nl-dismiss';
-    dismiss.autofocus = true;
-    const track = document.createElement('div');
-    track.className = 'nl-track';
+    const { track, caption, updateControls } = createGalleryShell(dialog, galleryAppearance(trigger, options), {
+      close: 'Close gallery', previous: 'Previous slide', next: 'Next slide'
+    }, { dismiss: () => close(dialog), previous: () => go(index - 1), next: () => go(index + 1) }, links.length);
     const slides = links.map(() => {
       const slide = document.createElement('div');
       slide.className = 'nl-slide';
@@ -37,17 +28,6 @@ export async function openGallery(trigger) {
       track.append(slide);
       return slide;
     });
-    const footer = document.createElement('div');
-    footer.className = 'nl-footer';
-    const caption = document.createElement('span');
-    const count = document.createElement('span');
-    count.setAttribute('aria-live', 'polite');
-    count.setAttribute('aria-atomic', 'true');
-    const previous = button('Previous slide', '←', () => go(index - 1));
-    const next = button('Next slide', '→', () => go(index + 1));
-    previous.hidden = next.hidden = links.length === 1;
-    footer.append(previous, caption, count, next);
-    dialog.append(dismiss, track, footer);
     let updateThumbs = () => {};
     let timer;
     const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -89,6 +69,7 @@ export async function openGallery(trigger) {
           slide.textContent = 'Media unavailable';
         }
         const original = document.createElement('a');
+        original.className = 'nl-original';
         original.href = link.href;
         original.textContent = 'Open original';
         original.target = '_blank';
@@ -96,9 +77,7 @@ export async function openGallery(trigger) {
         if (['http:', 'https:'].includes(new URL(link.href).protocol)) slide.append(original);
       }
       caption.textContent = link.dataset.nlCaption || '';
-      count.textContent = `${index + 1} / ${links.length}`;
-      previous.disabled = index === 0;
-      next.disabled = index === links.length - 1;
+      updateControls(index);
       updateThumbs(index);
       dialog.dispatchEvent(new CustomEvent('nl:change', { detail: { index } }));
     }
@@ -133,7 +112,7 @@ export async function openGallery(trigger) {
     }, { once: true });
     if (trigger.closest('[data-nl-thumbs]')) {
       const { createThumbs } = await import('./thumbs.js');
-      updateThumbs = createThumbs(dialog, links, go);
+      updateThumbs = createThumbs(dialog.querySelector('.nl-thumbs-slot') || dialog, links, go);
     }
     if (galleries.active && !galleries.active.close('replace')) { observer.disconnect(); return; }
     document.body.append(dialog);

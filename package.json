@@ -1,18 +1,38 @@
 {
   "name": "nano-lightbox",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Native dialog modals, drawers and mixed media galleries without runtime dependencies",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/VladimirIvanin/nano-lightbox.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladimirIvanin/nano-lightbox.git"
+  },
   "homepage": "https://vladimirivanin.github.io/nano-lightbox/",
-  "bugs": { "url": "https://github.com/VladimirIvanin/nano-lightbox/issues" },
-  "keywords": ["lightbox", "modal", "dialog", "gallery", "insales", "ecommerce"],
-  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "bugs": {
+    "url": "https://github.com/VladimirIvanin/nano-lightbox/issues"
+  },
+  "keywords": [
+    "lightbox",
+    "modal",
+    "dialog",
+    "gallery",
+    "insales",
+    "ecommerce"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "module": "./dist/auto.js",
   "unpkg": "./browser-build/nano-lightbox.min.js",
   "jsdelivr": "./browser-build/nano-lightbox.min.js",
-  "files": ["dist", "browser-build", "LICENSE", "README.md"],
+  "files": [
+    "dist",
+    "browser-build",
+    "LICENSE",
+    "README.md"
+  ],
   "exports": {
     ".": "./dist/auto.js",
     "./core": "./dist/core.js",

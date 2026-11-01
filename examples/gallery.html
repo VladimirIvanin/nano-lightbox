@@ -9,14 +9,31 @@
 <header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"></span>Nano Lightbox</a><nav class="example-links" aria-label="Примеры"><a href="../index.html">Документация ↗</a><a href="modal.html">Модалка</a><a href="menu.html">Меню</a><a href="gallery.html" aria-current="page">Галерея</a></nav></header>
 <div class="example-container"><div class="section-meta">Примеры / Галерея</div><h1>Медиа в одном пространстве</h1><p class="lead">Фотографии, видеофайл и внешние плееры в одной галерее. Откройте любой слайд.</p>
 <main class="example-gallery" data-nl-thumbs aria-label="Смешанная галерея">
-  <a class="photo" href="assets/lake.jpg" data-nl-gallery="demo" data-nl-caption="Первое изображение"><img src="assets/lake.jpg" alt="Озеро среди гор"><span>Озеро среди гор <span>01 ↗</span></span></a>
-  <a class="photo" href="assets/mountain.jpg" data-nl-gallery="demo" data-nl-caption="Второе изображение"><img src="assets/mountain.jpg" alt="Горный хребет"><span>Горный хребет <span>02 ↗</span></span></a>
+  <a class="photo" href="assets/lake.jpg" data-nl-gallery="demo" data-nl-caption="Озеро среди гор"><img src="assets/lake.jpg" alt="Озеро среди гор"><span>Озеро среди гор <span>01 ↗</span></span></a>
+  <a class="photo" href="assets/mountain.jpg" data-nl-gallery="demo" data-nl-caption="Горный хребет"><img src="assets/mountain.jpg" alt="Горный хребет"><span>Горный хребет <span>02 ↗</span></span></a>
   <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" data-nl-gallery="demo"><span class="play-mark" aria-hidden="true">▷</span>Видеофайл<small>MP4 · нативный плеер</small></a>
   <a href="https://www.youtube.com/watch?v=M7lc1UVf-VE" data-nl-gallery="demo"><span class="play-mark" aria-hidden="true">▷</span>YouTube<small>Встроенный плеер</small></a>
   <a href="https://vimeo.com/76979871" data-nl-gallery="demo"><span class="play-mark" aria-hidden="true">▷</span>Vimeo<small>Встроенный плеер</small></a>
   <a href="https://rutube.ru/video/7716bd3e665725c3c008ae7ab4ff02e2/" data-nl-gallery="demo"><span class="play-mark" aria-hidden="true">▷</span>RUTUBE<small>Встроенный плеер</small></a>
 </main>
 <h2>Один кадр, без миниатюр</h2><p>Отдельная группа работает независимо. У одиночного слайда нет стрелок перелистывания.</p><a class="button secondary" href="assets/landscape.jpg" data-nl-gallery="single">Одиночное изображение</a>
-<div class="example-note"><p>Миниатюры включены только у первой группы. VK и Kinescope также поддерживаются. Для закрытых роликов укажите URL из кода встраивания в <code>data-nl-embed</code>.</p><a href="../index.html#gallery">Разметка и атрибуты галереи →</a></div>
+<h2>Оформление под ваш сайт</h2>
+<p>Светлая тема меняет палитру. HTML-шаблон позволяет перестроить окно: здесь подпись и миниатюры вынесены в боковую колонку.</p>
+<div class="appearance-examples">
+  <a class="button secondary" href="assets/lake.jpg" data-nl-gallery="light" data-nl-theme="light" data-nl-caption="Озеро среди гор">Светлая тема</a>
+  <div data-nl-template="#editorial-template" data-nl-class="editorial-gallery" data-nl-theme="light" data-nl-thumbs>
+    <a class="button secondary" href="assets/lake.jpg" data-nl-thumb="assets/lake.jpg" data-nl-gallery="editorial" data-nl-caption="Озеро среди гор">Окно с боковой подписью</a>
+    <a hidden href="assets/mountain.jpg" data-nl-gallery="editorial" data-nl-caption="Горный хребет" data-nl-thumb="assets/mountain.jpg">Горный хребет</a>
+  </div>
+</div>
+<template id="editorial-template">
+  <div class="nl-toolbar"><span class="nl-count"></span><button class="nl-dismiss"></button></div>
+  <div class="nl-stage"><div class="nl-track"></div><button class="nl-previous"></button><button class="nl-next"></button></div>
+  <aside class="editorial-info">
+    <div class="nl-footer"><p class="editorial-series">Альпийский маршрут</p><h2 class="nl-caption"></h2><p>Два кадра о тишине, высоте и свете в горах</p></div>
+    <div class="nl-thumbs-slot"></div>
+  </aside>
+</template>
+<div class="example-note"><p>Миниатюры включены у основной группы и примера с боковой подписью. VK и Kinescope также поддерживаются. Для закрытых роликов укажите URL из кода встраивания в <code>data-nl-embed</code>.</p><a href="../index.html#gallery">Разметка и атрибуты галереи →</a></div>
 </div></body>
 </html>
