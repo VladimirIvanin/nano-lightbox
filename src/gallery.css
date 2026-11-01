@@ -1,0 +1,54 @@
+.nl-gallery {
+  --nl-surface: #141414;
+  --nl-color: #fff;
+  --nl-padding: 1rem;
+  width: 76rem;
+  overflow: hidden;
+}
+.nl-gallery[open] { display: flex; flex-direction: column; gap: .75rem; }
+.nl-gallery button {
+  background: transparent;
+  color: inherit;
+  border: 1px solid #777;
+  border-radius: .3rem;
+  min-width: 44px;
+  min-height: 44px;
+  font: inherit;
+  cursor: pointer;
+}
+.nl-gallery button:disabled { opacity: .4; cursor: default; }
+.nl-gallery :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.nl-dismiss { align-self: flex-end; font-size: 1.5rem !important; }
+.nl-track {
+  display: flex;
+  direction: ltr;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  min-height: 0;
+}
+.nl-track::-webkit-scrollbar { display: none; }
+.nl-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  height: min(65vh, 45rem);
+  height: min(65dvh, 45rem);
+  overflow: auto;
+  /* Horizontal gestures must still reach the parent Scroll Snap track. */
+  overscroll-behavior-y: contain;
+}
+.nl-slide img, .nl-slide video { display: block; max-width: 100%; max-height: calc(100% - 2rem); object-fit: contain; min-height: 0; }
+.nl-slide iframe { border: 0; width: 100%; height: calc(100% - 2rem); min-height: 200px; }
+.nl-slide a { color: inherit; font: .875rem system-ui; }
+.nl-footer { display: flex; align-items: center; gap: .75rem; }
+.nl-footer > span:first-of-type { flex: 1; overflow-wrap: anywhere; }
+.nl-footer > span:last-of-type { white-space: nowrap; }
+.nl-gallery [hidden] { display: none; }
+@media (max-height: 500px) { .nl-slide { height: 50dvh; } }

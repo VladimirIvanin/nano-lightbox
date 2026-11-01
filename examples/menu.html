@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nano Lightbox — меню</title>
+<link rel="stylesheet" href="../dist/core.css">
+<link rel="stylesheet" href="example.css">
+<script type="module" src="../dist/auto.js"></script>
+<body class="example-page">
+<header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"></span>Nano Lightbox</a><nav class="example-links" aria-label="Примеры"><a href="../index.html">Документация ↗</a><a href="modal.html">Модалка</a><a href="menu.html" aria-current="page">Меню</a><a href="gallery.html">Галерея</a></nav></header>
+<main class="example-container"><div class="section-meta">Примеры / Мобильное меню</div><h1>Навигация у края экрана</h1><p class="lead">Уменьшите окно до ширины менее 900 px, чтобы открыть мобильную панель.</p>
+<div class="menu-showcase"><header><span class="brand">Пример сайта</span><button class="mobile button secondary" data-nl-open="menu" aria-controls="menu">Меню</button><nav class="desktop" aria-label="Основная"><a href="#about">О нас</a><a href="#contacts">Контакты</a></nav></header>
+<section id="about"><h2>О нас</h2><p>На широком экране видна обычная навигация. На узком она становится выезжающим меню на основе dialog.</p></section><section id="contacts"><h2>Контакты</h2><p>Переход по якорю закрывает панель и перемещает страницу к разделу.</p></section></div>
+<p><a href="../index.html#drawer">Посмотреть разметку панели →</a></p></main>
+<dialog id="menu" data-nl-drawer="start" aria-label="Основная навигация"><div class="dialog-top"><span class="brand">Навигация</span><button class="button secondary" data-nl-close autofocus>Закрыть</button></div><nav><a href="#about">О нас</a><a href="#contacts">Контакты</a></nav></dialog>
+<script type="module">
+import { close } from '../dist/core.js';
+const menu = document.getElementById('menu');
+menu.addEventListener('click', event => {
+  const link = event.target.closest('a[href^="#"]');
+  if (!link) return;
+  event.preventDefault();
+  menu.addEventListener('close', () => { location.hash = link.hash; }, { once: true });
+  close(menu);
+});
+matchMedia('(min-width:900px)').addEventListener('change', event => { if (event.matches && menu.open) close(menu); });
+</script>
+</body>
+</html>

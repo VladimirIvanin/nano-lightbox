@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Изолированные виджеты — Nano Lightbox</title>
+<link rel="stylesheet" href="../browser-build/nano-lightbox.css">
+<style>body{font:18px system-ui;max-width:900px;margin:40px auto;padding:20px}section{padding:24px;border:1px solid #aaa;margin:20px 0}button,a{margin:8px}dialog:not(.nl-gallery){padding:28px}output{display:block}</style>
+<h1>Независимые экземпляры виджета</h1>
+<p>Одинаковые имена групп и один товар. У каждого блока свои настройки, события и очистка.</p>
+<section data-widget-drop-item-id="101" data-product-id="42">
+  <h2>Виджет A</h2>
+  <div class="photos"><a href="./assets/one.svg" data-nl-gallery="product">Фото A1</a><a href="./assets/two.svg" data-nl-gallery="product">Фото A2</a></div>
+  <button data-nl-open="preview-a">Быстрый просмотр A</button>
+  <dialog id="preview-a" data-nl-modal aria-label="Товар A"><button data-nl-close>Закрыть товар</button><div class="preview-photos"><a href="./assets/mountain.jpg" data-nl-gallery="product">Фото в быстром просмотре A</a></div></dialog>
+  <button class="replace">Сменить вариант (JS-массив)</button><button class="remove">Удалить виджет</button><output>Событий: 0</output>
+</section>
+<section data-widget-drop-item-id="102" data-product-id="42">
+  <h2>Виджет B</h2>
+  <div class="photos"><a href="./assets/two.svg" data-nl-gallery="product">Фото B1</a><a href="./assets/mountain.jpg" data-nl-gallery="product">Фото B2</a></div>
+  <button data-nl-open="preview-b">Быстрый просмотр B</button>
+  <dialog id="preview-b" data-nl-modal aria-label="Товар B"><button data-nl-close>Закрыть товар</button><div class="preview-photos"><a href="./assets/one.svg" data-nl-gallery="product">Фото в быстром просмотре B</a></div></dialog>
+  <button class="replace">Сменить вариант (JS-массив)</button><button class="remove">Удалить виджет</button><output>Событий: 0</output>
+</section>
+<script src="../browser-build/nano-lightbox.min.js"></script>
+<script>
+for (const root of document.querySelectorAll('section')) {
+  const scope = NanoLightbox.createScope(root);
+  const gallery = scope.gallery(root.querySelector('.photos'), { thumbs: true });
+  scope.modal(root.querySelector('dialog'));
+  scope.gallery(root.querySelector('.preview-photos'));
+  let changes = 0;
+  gallery.on('change', () => root.querySelector('output').textContent = `Событий: ${++changes}`);
+  const events = new AbortController();
+  scope.addCleanup(() => events.abort());
+  root.querySelector('.replace').addEventListener('click', () => {
+    gallery.setItems([{ src: './assets/mountain.jpg', caption: 'Другой вариант этого экземпляра' }]);
+    gallery.open(0);
+  }, { signal: events.signal });
+  root.querySelector('.remove').addEventListener('click', () => {
+    scope.destroy(); // Владелец освобождает ресурсы ДО изменения DOM.
+    root.remove();
+  }, { signal: events.signal });
+}
+</script>
+</html>
+

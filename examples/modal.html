@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nano Lightbox — форма</title>
+<link rel="stylesheet" href="../dist/core.css">
+<link rel="stylesheet" href="example.css">
+<script type="module" src="../dist/auto.js"></script>
+<body class="example-page">
+<header class="site-header"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"></span>Nano Lightbox</a><nav class="example-links" aria-label="Примеры"><a href="../index.html">Документация ↗</a><a href="modal.html" aria-current="page">Модалка</a><a href="menu.html">Меню</a><a href="gallery.html">Галерея</a></nav></header>
+<main class="example-container"><div class="section-meta">Примеры / Модальное окно</div><h1>Форма в центре внимания</h1><p class="lead">Нативный диалог с полем ввода, возвратом фокуса и блокировкой прокрутки.</p>
+<div class="demo-stage"><div><span class="stage-label">Попробуйте в действии</span><h3>Обратная связь</h3><p>Закройте окно кнопкой, нажатием на фон или клавишей <kbd>Esc</kbd>.</p></div><button class="button primary" data-nl-open="contact">Открыть форму</button></div>
+<div class="note"><strong>Встроенная семантика формы</strong><p>Кнопка «Отправить» проверяет обязательное поле. Значение кнопки сохраняется в <code>dialog.returnValue</code>.</p></div><p><a href="../index.html#modals">Посмотреть код подключения →</a></p></main>
+<dialog id="contact" data-nl-modal class="example-dialog" aria-labelledby="title">
+  <h2 id="title">Обратная связь</h2>
+  <p>Оставьте имя, чтобы проверить нативную валидацию формы.</p>
+  <form method="dialog"><label>Имя <input name="name" placeholder="Ваше имя" autofocus required></label><button class="button primary" value="send">Отправить</button> <button class="button secondary" formnovalidate value="cancel">Отмена</button></form>
+  <button class="text-link" style="border:0;background:transparent;padding:0;color:var(--muted)" data-nl-close>Закрыть</button>
+</dialog>
+</body>
+</html>

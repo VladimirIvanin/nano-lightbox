@@ -1,0 +1,45 @@
+{
+  "name": "nano-lightbox",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Native dialog modals, drawers and mixed media galleries without runtime dependencies",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/VladimirIvanin/nano-lightbox.git" },
+  "homepage": "https://vladimirivanin.github.io/nano-lightbox/",
+  "bugs": { "url": "https://github.com/VladimirIvanin/nano-lightbox/issues" },
+  "keywords": ["lightbox", "modal", "dialog", "gallery", "insales", "ecommerce"],
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
+  "module": "./dist/auto.js",
+  "unpkg": "./browser-build/nano-lightbox.min.js",
+  "jsdelivr": "./browser-build/nano-lightbox.min.js",
+  "files": ["dist", "browser-build", "LICENSE", "README.md"],
+  "exports": {
+    ".": "./dist/auto.js",
+    "./core": "./dist/core.js",
+    "./gallery": "./dist/gallery.js",
+    "./providers": "./dist/providers.js",
+    "./thumbs": "./dist/thumbs.js",
+    "./instances": "./dist/instances.js",
+    "./nano-lightbox.js": "./dist/nano-lightbox.js",
+    "./browser-build/nano-lightbox.min.js": "./browser-build/nano-lightbox.min.js",
+    "./browser-build/nano-lightbox.css": "./browser-build/nano-lightbox.css",
+    "./*.css": "./dist/*.css"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.js",
+    "prepack": "npm run build",
+    "build": "node scripts/build.js",
+    "build:browser": "node scripts/build-browser.js",
+    "docs:build": "npm run build && node scripts/build-docs.js",
+    "test:docs": "npm run docs:build && playwright test --config playwright.docs.config.js",
+    "test:package": "npm run build && node scripts/test-package.js",
+    "check:release": "node scripts/check-release.js",
+    "test": "node --test tests/providers.test.js tests/release.test.js",
+    "test:browser": "playwright test",
+    "check": "npm run build && npm test && npm run test:browser"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "esbuild": "^0.25.12"
+  }
+}

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+browser-build/
+site-dist/
+.tmp/
+*.tgz

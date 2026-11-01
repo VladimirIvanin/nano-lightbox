@@ -1,0 +1,50 @@
+dialog[data-nl-modal], dialog[data-nl-drawer], dialog.nl-gallery {
+  box-sizing: border-box;
+  border: 0;
+  padding: var(--nl-padding, 1.5rem);
+  max-width: calc(100% - 2rem);
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  border-radius: var(--nl-radius, .5rem);
+  background: var(--nl-surface, #fff);
+  color: var(--nl-color, #171717);
+  overflow: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  transform: translateY(.5rem);
+  transition-property: opacity, transform, display, overlay;
+  transition-duration: var(--nl-duration, 180ms);
+  transition-behavior: allow-discrete;
+}
+dialog[data-nl-modal][open], dialog[data-nl-drawer][open], dialog.nl-gallery[open] { opacity: 1; transform: none; }
+dialog[data-nl-modal]::backdrop, dialog[data-nl-drawer]::backdrop, dialog.nl-gallery::backdrop {
+  background: var(--nl-backdrop, rgb(0 0 0 / .65));
+}
+dialog[data-nl-drawer] {
+  margin: 0;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inset-inline-end: auto;
+  width: var(--nl-drawer-width, 22rem);
+  max-width: 90%;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  border-radius: 0;
+  overflow-y: auto;
+  padding-block: max(1.5rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-bottom));
+  transform: translateX(-100%);
+}
+dialog[data-nl-drawer="end"] { inset-inline-start: auto; inset-inline-end: 0; transform: translateX(100%); }
+:dir(rtl)[data-nl-drawer="start"] { transform: translateX(100%); }
+:dir(rtl)[data-nl-drawer="end"] { transform: translateX(-100%); }
+@starting-style {
+  dialog[data-nl-modal][open], dialog.nl-gallery[open] { opacity: 0; transform: translateY(.5rem); }
+  dialog[data-nl-drawer][open] { transform: translateX(-100%); }
+  dialog[data-nl-drawer="end"][open] { transform: translateX(100%); }
+  :dir(rtl)[data-nl-drawer="start"][open] { transform: translateX(100%); }
+  :dir(rtl)[data-nl-drawer="end"][open] { transform: translateX(-100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog[data-nl-modal], dialog[data-nl-drawer], dialog.nl-gallery { transition: none; }
+}
