@@ -51,6 +51,8 @@ test('gallery opens in the middle, synchronizes native scroll, thumbnails and re
   await expect(gallery.locator('.nl-thumbs [aria-current="true"]')).toHaveAttribute('aria-label', 'Slide 2');
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(gallery.locator('[aria-live]')).toHaveText('2 / 6');
+  // ResizeObserver must finish aligning the new viewport before simulating a swipe.
+  await expect.poll(() => gallery.locator('.nl-track').evaluate(track => Math.abs(track.scrollLeft - track.clientWidth))).toBeLessThan(2);
   await gallery.locator('.nl-track').evaluate(track => { track.scrollLeft = 0; });
   await expect(gallery.locator('[aria-live]')).toHaveText('1 / 6');
   await gallery.getByRole('button', { name: 'Slide 2', exact: true }).click();

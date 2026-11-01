@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 ## Однократная настройка сервисов
 
-На момент настройки `npm view nano-lightbox` возвращает E404: пакет ещё не опубликован. Первую версию нужно опубликовать под аккаунтом владельца, после чего появятся настройки пакета для Trusted Publisher:
+Для этого репозитория первая версия `0.1.0` опубликована в npm, Trusted Publisher настроен на `VladimirIvanin/nano-lightbox`, workflow `publish.yml`, с правом публикации; GitHub Pages использует GitHub Actions. Ниже порядок первоначальной настройки для воспроизведения или переноса:
 
 1. Выполнить `npm ci`, `npm run check`, `npm run test:package`. Последняя команда выводит путь к проверенному `.tgz`.
 2. Выполнить `npm login`, затем `npm publish <путь-к-проверенному-tgz> --access public`. Этот шаг выполняется один раз для первоначального создания пакета.
